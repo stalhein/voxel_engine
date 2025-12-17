@@ -66,6 +66,49 @@ void Chunk::addFace(int x, int y, int z, int normalIndex, int textureIndex)
     for (int i = base; i < base+24; i+=4) {
         int vx = x + faces[i];
         int vy = y + faces[i+1];
-        
+        int vz = z + faces[i+2];
+        int uv = faces[i+3];
+        mesh.push_back(packVertex(vx, vy, vz, normalIndex, uv, textureIndex));
     }
+}
+
+std::array<uint8_t, BLOCKS_PER_CHUNK>& Chunk::getBlocks()
+{
+    return blocks;
+}
+
+uint8_t Chunk::getLocalBlockAt(int x, int y, int z)
+{
+    if (x < 0 || y < 0 || z < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) {
+        int index = posToIndex(x, y, z);
+        return blocks[index];
+    }
+}
+uint8_t Chunk::getBlockAt(int x, int y, int z)
+{
+    int cx = chunkX, cy = chunkY, cz = chunkZ;
+    int lx = x, ly = y, lz = z;
+
+    if (x < 0)  cx -= 1, lx -= CHUNK_SIZE;
+    else if (x >= CHUNK_SIZE)   cx += 1, lx -= CHUNK_SIZE;
+    else if (y < 0) cy -= 1, ly += CHUNK_SIZE;
+    else if (y >= CHUNK_SIZE)   cy += 1, ly -= CHUNK_SIZE;
+    else if (z < 0) cz -= 1, lz += CHUNK_SIZE;
+    else if (z >= CHUNK_SIZE)   cz += 1, lz -= CHUNK_SIZE;
+
+    if (cx != chunkX || cy != chunkY || cz != chunkZ) {
+        Chunk* chunk = world->getChunkAt(cx, cy, cz);
+        if (!chunk) return 0;
+        return chunk->getLocalBlockAt(lx, ly, lz);
+    }
+
+    int index = posToIndex(x, y, z);
+    return blocks[index];
+}
+
+void Chunk::setBlockAt(int x, int y, int z, uint8_t value)
+{
+    if (x < 0 || y < 0 || z < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE)   return;
+    int index = posToIndex(x, y, z);
+    blocks[index] = value;
 }

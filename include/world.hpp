@@ -12,9 +12,11 @@
 #include <glm/glm.hpp>
 
 #include "constants.hpp"
+#include "fastnoiselite.hpp"
 #include "shader.hpp"
 #include "input.hpp"
 #include "chunk.hpp"
+#include "stb_image.hpp"
 
 struct ChunkCoord
 {
@@ -40,6 +42,8 @@ struct ChunkCoordHash
 class World
 {
 public:
+    FastNoiseLite noise;
+
     World();
     ~World();
 

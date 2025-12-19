@@ -6,6 +6,11 @@
 #include "constants.hpp"
 #include "input.hpp"
 #include "shader.hpp"
+#include "world.hpp"
+#include "player.hpp"
+
+constexpr int START_SCR_WIDTH = 800, START_SCR_HEIGHT = 600;
+int scr_width, scr_height;
 
 void framebuffer_size_callback(GLFWwindow*, int width, int height);
 float xoffset, yofset;
@@ -19,7 +24,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(scr_width, scr_height, "Voxel Engine", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(START_SCR_WIDTH, START_SCR_HEIGHT, "Voxel Engine", NULL, NULL);
     if (window == NULL) {
         std::cerr << "Failed to create GLFW window." << std::endl;
         glfwTerminate();
@@ -54,6 +59,8 @@ int main()
 
     Input::get().init(window);
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
+    World world;
+    Player player(glm::vec3(8.f, 32.f, 0.f), &world);
 
     while (!glfwWindowShouldClose(window)) {
         float time = glfwGetTime();
@@ -64,10 +71,21 @@ int main()
 
         Input::get().update();
         auto& input = Input::get();
-        if (input.key(GLFW_KEY_ESCAPE)) { glfwSetWindowShouldClose(window, true); }
+        if (input.key(GLFW_KEY_ESCAPE)) { glfwSetWindowShouldClose(window, 1); }
+        player.update(window, input.getXOffset(), input.getYOffset(), deltaTime);
 
         glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glm::mat4 projection = glm::perspective(glm::radians(50.0f), (float)scr_width / (float)scr_height, 0.1f, 1000.f);
+        glm::mat4 view = player.getViewMatrix();
+
+        shader.use();
+        shader.setMat4("uView", view);
+        shader.setMat4("uProjection", projection);
+        
+        world.update();
+        world.render(&shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

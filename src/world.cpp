@@ -21,9 +21,9 @@ World::World()
 
     loadTextures();
 
-    for (int x = 0; x < 8; ++x) {
-        for (int y = 0; y < 4; ++y) {
-            for (int z = 0; z < 8; ++z) {
+    for (int x = 0; x < 2; ++x) {
+        for (int y = 0; y < 1; ++y) {
+            for (int z = 0; z < 1; ++z) {
                 chunks[{x, y, z}] = std::make_unique<Chunk>(this, x, y, z);
                 chunks[{x, y, z}]->generateTerrain();
             }
@@ -39,6 +39,7 @@ void World::update()
 {
     for (auto& [coord, chunk] : chunks) {
         if (chunk->dirty) {
+            chunk->generateMesh();
             chunk->uploadMesh();
             chunk->dirty = false;
         }
@@ -82,7 +83,7 @@ void World::loadTextures()
             std::cerr << "Failed to load texture: " << texturePaths[i] << std::endl;
             exit(1);
         }
-        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, firstData);
+        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
     }

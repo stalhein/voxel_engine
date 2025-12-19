@@ -9,10 +9,12 @@ void Player::update(GLFWwindow* window, float xoffset, float yoffset, float delt
 {
     glm::vec3 inputDir(0.f);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) inputDir += frontXY;
+    /*if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) inputDir += frontXY;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) inputDir -= frontXY;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) inputDir -= right;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) inputDir += right;
+
+    
 
     if (glm::length(inputDir) > 0.01f)  inputDir = glm::normalize(inputDir);
 
@@ -43,7 +45,15 @@ void Player::update(GLFWwindow* window, float xoffset, float yoffset, float delt
 
     velocity.y += gravity * deltaTime;
 
-    applyCollisions(deltaTime);
+    applyCollisions(deltaTime);*/
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) position += frontXY * (deltaTime * 100);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) position -= frontXY * (deltaTime * 100);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) position -= right * (deltaTime * 100);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) position += right * (deltaTime * 100);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) position += worldUp * (deltaTime * 100);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) position -= worldUp * (deltaTime * 100);
+
 
     xoffset *= sensitivity;
     yoffset *= sensitivity;

@@ -1,4 +1,5 @@
 #include "chunk.hpp"
+#include "world.hpp"
 
 Chunk::Chunk(World* world, int x, int y, int z) : chunkX(x), chunkY(y), chunkZ(z), world(world)
 {
@@ -20,16 +21,24 @@ Chunk::~Chunk()
 
 void Chunk::generateTerrain()
 {
-    blocks.fill(1);
-
-
+    blocks.fill(0);
+    for (int x = 0; x < CHUNK_SIZE; ++x) {
+        for (int z = 0; z < CHUNK_SIZE; ++z) {
+            float noiseValue = world->noise.GetNoise((float)(x + chunkX * CHUNK_SIZE), (float)(z + chunkZ * CHUNK_SIZE));
+            int height = std::max(floor((noiseValue + 1.0) / 2 * (CHUNK_SIZE * 1)), 1.0);
+            int localHeight = std::clamp(height - chunkY * CHUNK_SIZE, 0, CHUNK_SIZE);
+            for (int y = 0; y < localHeight; ++y) {
+                blocks[posToIndex(x, y, z)] = 1;
+            }
+        }
+    }
 }
 
 void Chunk::generateMesh()
 {
     mesh.clear();
     for (int z = 0; z < CHUNK_SIZE; ++z) {
-        for (int y = 0; y < CHUNK_SIZE; ++z) {
+        for (int y = 0; y < CHUNK_SIZE; ++y) {
             for (int x = 0; x < CHUNK_SIZE; ++x) {
                 int index = posToIndex(x, y, z);
                 if (blocks[index] == 0) continue;
@@ -54,7 +63,7 @@ void Chunk::uploadMesh()
 
 void Chunk::render(Shader* shader)
 {
-    shader->setMat4("uMode", model);
+    shader->setMat4("uModel", model);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, mesh.size());
@@ -83,13 +92,15 @@ uint8_t Chunk::getLocalBlockAt(int x, int y, int z)
         int index = posToIndex(x, y, z);
         return blocks[index];
     }
+    return 0;
 }
+
 uint8_t Chunk::getBlockAt(int x, int y, int z)
 {
     int cx = chunkX, cy = chunkY, cz = chunkZ;
     int lx = x, ly = y, lz = z;
 
-    if (x < 0)  cx -= 1, lx -= CHUNK_SIZE;
+    if (x < 0)  cx -= 1, lx += CHUNK_SIZE;
     else if (x >= CHUNK_SIZE)   cx += 1, lx -= CHUNK_SIZE;
     else if (y < 0) cy -= 1, ly += CHUNK_SIZE;
     else if (y >= CHUNK_SIZE)   cy += 1, ly -= CHUNK_SIZE;
@@ -105,7 +116,6 @@ uint8_t Chunk::getBlockAt(int x, int y, int z)
     int index = posToIndex(x, y, z);
     return blocks[index];
 }
-
 void Chunk::setBlockAt(int x, int y, int z, uint8_t value)
 {
     if (x < 0 || y < 0 || z < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE)   return;

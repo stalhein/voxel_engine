@@ -24,9 +24,9 @@ void main()
     uint x = (aVertex & 31);
     uint y = ((aVertex >> 5) & 31);
     uint z = ((aVertex >> 10) & 31);
-    uint normalIndex = (aVertex >> 15) & 7;
-    uint UVIndex = (aVertex > 18) & 3;
-    uint textureIndex = (aVertex >> 20) & 127;
+    uint normalIndex = ((aVertex >> 15) & 7);
+    uint UVIndex = ((aVertex >> 18) & 3);
+    uint textureIndex = ((aVertex >> 20) & 127);
 
     vec2 localUV = getUV(UVIndex, textureIndex);
     

@@ -2,10 +2,7 @@
 
 #include <glm/glm.hpp>
 
-constexpr int START_SCR_WIDTH = 800, START_SCR_HEIGHT = 600;
-int scr_width = START_SCR_WIDTH, scr_height = START_SCR_HEIGHT;
-
-constexpr bool CULL_BACK_FACES = false;
+constexpr bool CULL_BACK_FACES = true;
 constexpr bool WIREFRAMES = true;
 
 constexpr int CHUNK_SIZE = 16;
@@ -18,17 +15,16 @@ struct CollisionBox
 };
 
 constexpr int faces[] = {
-    // Left 
+    // Left face
     0, 0, 0, 0,
     0, 1, 0, 2,
-    0, 1, 1, 3,
     0, 1, 1, 3,
 
     0, 0, 0, 0,
     0, 1, 1, 3,
     0, 0, 1, 1,
 
-    // Right
+    // Right face
     1, 0, 0, 0,
     1, 0, 1, 1,
     1, 1, 1, 3,
@@ -37,7 +33,7 @@ constexpr int faces[] = {
     1, 1, 1, 3,
     1, 1, 0, 2,
 
-    // Bottom
+    // Bottom face
     0, 0, 0, 0,
     0, 0, 1, 2,
     1, 0, 1, 3,
@@ -46,7 +42,7 @@ constexpr int faces[] = {
     1, 0, 1, 3,
     1, 0, 0, 1,
 
-    // Top
+    // Top face
     0, 1, 0, 0,
     1, 1, 0, 1,
     1, 1, 1, 3,
@@ -55,17 +51,21 @@ constexpr int faces[] = {
     1, 1, 1, 3,
     0, 1, 1, 2,
 
-    // Back
+    // Back face
     0, 0, 0, 0,
     1, 0, 0, 1,
     1, 1, 0, 3,
 
     0, 0, 0, 0,
     1, 1, 0, 3,
-    0, 1, 0, 3,
+    0, 1, 0, 2,
 
-    // Front
+    // Front face
     0, 0, 1, 0,
     0, 1, 1, 2,
-    1, 1, 1, 3
+    1, 1, 1, 3,
+
+    0, 0, 1, 0,
+    1, 1, 1, 3,
+    1, 0, 1, 1
 };

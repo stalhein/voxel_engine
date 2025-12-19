@@ -45,7 +45,7 @@ private:
     void addFace(int x, int y, int z, int normalIndex, int textureIndex);
     inline uint32_t packVertex(int localX, int localY, int localZ, int normalIndex, int uvIndex, int textureIndex)
     {
-        return (uint32_t)((localX & 31) | ((localY & 31) << 5) | ((localZ & 32) << 10) | ((normalIndex & 7) << 15) | ((uvIndex << 3) << 18) | ((textureIndex & 127) << 20));
+        return (uint32_t)((localX & 31) | ((localY & 31) << 5) | ((localZ & 31) << 10) | ((normalIndex & 7) << 15) | ((uvIndex & 3) << 18) | ((textureIndex & 127) << 20));
     }
     inline int posToIndex(int x, int y, int z)  { return z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x; }
 };

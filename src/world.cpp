@@ -22,8 +22,8 @@ World::World()
     loadTextures();
 
     for (int x = 0; x < 2; ++x) {
-        for (int y = 0; y < 1; ++y) {
-            for (int z = 0; z < 1; ++z) {
+        for (int y = 0; y < 2; ++y) {
+            for (int z = 0; z < 2; ++z) {
                 chunks[{x, y, z}] = std::make_unique<Chunk>(this, x, y, z);
                 chunks[{x, y, z}]->generateTerrain();
             }

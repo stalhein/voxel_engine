@@ -89,10 +89,10 @@ std::array<uint8_t, BLOCKS_PER_CHUNK>& Chunk::getBlocks()
 uint8_t Chunk::getLocalBlockAt(int x, int y, int z)
 {
     if (x < 0 || y < 0 || z < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) {
-        int index = posToIndex(x, y, z);
-        return blocks[index];
+        return 0;
     }
-    return 0;
+    int index = posToIndex(x, y, z);
+    return blocks[index];
 }
 
 uint8_t Chunk::getBlockAt(int x, int y, int z)
@@ -116,6 +116,7 @@ uint8_t Chunk::getBlockAt(int x, int y, int z)
     int index = posToIndex(x, y, z);
     return blocks[index];
 }
+
 void Chunk::setBlockAt(int x, int y, int z, uint8_t value)
 {
     if (x < 0 || y < 0 || z < 0 || x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE)   return;

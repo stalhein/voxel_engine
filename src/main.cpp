@@ -60,7 +60,7 @@ int main()
     Input::get().init(window);
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
     World world;
-    Player player(glm::vec3(8.f, 32.f, 0.f), &world);
+    Player player(glm::vec3(8.f, 32.f, 8.f), &world);
 
     while (!glfwWindowShouldClose(window)) {
         float time = glfwGetTime();

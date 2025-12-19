@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 constexpr bool CULL_BACK_FACES = true;
-constexpr bool WIREFRAMES = true;
+constexpr bool WIREFRAMES = false;
 
 constexpr int CHUNK_SIZE = 16;
 constexpr int BLOCKS_PER_CHUNK = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;

@@ -21,9 +21,9 @@ World::World()
 
     loadTextures();
 
-    for (int x = 0; x < 2; ++x) {
-        for (int y = 0; y < 2; ++y) {
-            for (int z = 0; z < 2; ++z) {
+    for (int x = 0; x < 32; ++x) {
+        for (int y = 0; y < 8; ++y) {
+            for (int z = 0; z < 32; ++z) {
                 chunks[{x, y, z}] = std::make_unique<Chunk>(this, x, y, z);
                 chunks[{x, y, z}]->generateTerrain();
             }
@@ -120,53 +120,21 @@ uint8_t World::getBlockAt(int x, int y, int z)
 
 bool World::collidesWithWorld(const glm::vec3& pos, glm::vec3& size)
 {
-    CollisionBox box = {pos, size};
-    auto blocks = getBlocksAround(box);
+    int minX = (int)std::floor(pos.x);
+    int minY = (int)std::floor(pos.y);
+    int minZ = (int)std::floor(pos.z);
 
-    for (size_t x = 0; x < blocks.size(); ++x)
-    {
-        for (size_t y = 0; y < blocks[x].size(); ++y)
-        {
-            for (size_t z = 0; z < blocks[x][y].size(); ++z)
-            {
-                if (blocks[x][y][z] != 0)   return true;
+    int maxX = (int)std::floor(pos.x + size.x);
+    int maxY = (int)std::floor(pos.y + size.y);
+    int maxZ = (int)std::floor(pos.z + size.z);
+
+    for (int x = minX; x <= maxX; ++x) {
+        for (int y = minY; y <= maxY; ++y) {
+            for (int z = minZ; z <= maxZ; ++z) {
+                if (getBlockAt(x, y, z) != 0)   return true;
             }
         }
     }
 
     return false;
-}
-
-std::vector<std::vector<std::vector<uint8_t>>> World::getBlocksAround(CollisionBox& cuboid)
-{
-    int startX = static_cast<int>(std::floor(cuboid.position.x));
-    int startY = static_cast<int>(std::floor(cuboid.position.y));
-    int startZ = static_cast<int>(std::floor(cuboid.position.z));
-    
-    int endX = static_cast<int>(std::floor(cuboid.position.x + cuboid.size.x));
-    int endY = static_cast<int>(std::floor(cuboid.position.y + cuboid.size.y));
-    int endZ = static_cast<int>(std::floor(cuboid.position.z + cuboid.size.z));
-    
-    int sx = endX - startX + 1;
-    int sy = endY - startY + 1;
-    int sz = endZ - startZ + 1;
-
-    std::vector<std::vector<std::vector<uint8_t>>> overlappingBlocks(
-        sx,
-        std::vector<std::vector<uint8_t>>(sy, std::vector<uint8_t>(sz))
-    );
-
-    for (int x = 0; x < sx; ++x) {
-        for (int y = 0; y < sy; ++y) {
-            for (int z = 0; z < sz; ++z) {
-                int wx = startX + x;
-                int wy = startY + y;
-                int wz = startZ + z;
-
-                overlappingBlocks[x][y][z] = getBlockAt(wx, wy, wz);
-            }
-        }
-    }
-
-    return overlappingBlocks;
 }

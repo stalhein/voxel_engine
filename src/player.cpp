@@ -67,14 +67,21 @@ void Player::applyCollisions(float dt)
     glm::vec3 oldPos = position;
 
     position.x += velocity.x * dt;
-    if (world->collidesWithWorld({position.x - size.x/2, position.y - size.y * 0.8, position.z - size.z / 2}, size)) {
-        position.x = oldPos.x;
-        velocity.x = 0;
+    if (world->collidesWithWorld(aabbPos(), size)) {
+        position.y += stepHeight;
+
+        if (!world->collidesWithWorld(aabbPos(), size)) {
+
+        } else {
+            position.y -= stepHeight;
+            position.x = oldPos.x;
+            velocity.x = 0;
+        }
     }
 
     oldPos = position;
     position.y += velocity.y * dt;
-    if (world->collidesWithWorld({position.x - size.x/2, position.y - size.y * 0.8, position.z - size.z / 2}, size)) {
+    if (world->collidesWithWorld(aabbPos(), size)) {
         position.y = oldPos.y;
         velocity.y = 0;
         if (oldPos.y >= position.y) falling = false;
@@ -84,9 +91,16 @@ void Player::applyCollisions(float dt)
 
     oldPos = position;
     position.z += velocity.z * dt;
-    if (world->collidesWithWorld({position.x - size.x/2, position.y - size.y * 0.8, position.z - size.z / 2}, size)) {
-        position.z = oldPos.z;
-        velocity.z = 0;
+    if (world->collidesWithWorld(aabbPos(), size)) {
+        position.y += stepHeight;
+
+        if (!world->collidesWithWorld(aabbPos(), size)) {
+            
+        } else {
+            position.y -= stepHeight;
+            position.z = oldPos.z;
+            velocity.z = 0;
+        }
     }
 }
 

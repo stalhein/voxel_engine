@@ -25,7 +25,11 @@ private:
     bool falling = true;
     void applyCollisions(float dt);
     void updateVectors();
+    inline glm::vec3 aabbPos()
+    {
+        return {position.x - size.x/2, position.y - size.y * 0.8, position.z - size.z / 2};
+    }
 
-    const float maxSpeed = speed, groundAcceleration = speed * 10.f, airAcceleration = speed * 1.f, groundFriction = 9.f, airDrag = 0.2f, gravity = -30.f;
+    const float maxSpeed = speed, groundAcceleration = speed * 10.f, airAcceleration = speed * 1.f, groundFriction = 10.f, airDrag = 0.5f, gravity = -30.f, stepHeight = 1.f;
 
 };

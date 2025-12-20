@@ -17,7 +17,9 @@ const char* texturePaths[textureCount] = {
 World::World()
 {
     noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
-    noise.SetFrequency(0.01f);
+    noise.SetFrequency(0.003f);
+    noise.SetFractalOctaves(8);
+    noise.SetFractalType(FastNoiseLite::FractalType::FractalType_FBm);
 
     loadTextures();
 

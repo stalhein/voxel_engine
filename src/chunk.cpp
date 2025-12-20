@@ -25,7 +25,7 @@ void Chunk::generateTerrain()
     for (int x = 0; x < CHUNK_SIZE; ++x) {
         for (int z = 0; z < CHUNK_SIZE; ++z) {
             float noiseValue = world->noise.GetNoise((float)(x + chunkX * CHUNK_SIZE), (float)(z + chunkZ * CHUNK_SIZE));
-            int height = std::max(floor((noiseValue + 1.0) / 2 * (CHUNK_SIZE * 1)), 1.0);
+            int height = std::max(floor((noiseValue + 1.0) / 2 * (CHUNK_SIZE * 8)), 1.0);
             int localHeight = std::clamp(height - chunkY * CHUNK_SIZE, 0, CHUNK_SIZE);
             for (int y = 0; y < localHeight; ++y) {
                 blocks[posToIndex(x, y, z)] = 1;

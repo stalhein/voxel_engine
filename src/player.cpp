@@ -7,6 +7,10 @@ Player::Player(glm::vec3 pos, World* world) : world(world), position(pos), front
 
 void Player::update(GLFWwindow* window, float xoffset, float yoffset, float deltaTime)
 {
+    deltaTime = std::min(deltaTime, 0.05f);
+
+    std::cout << position.y << "\n";
+
     glm::vec3 inputDir(0.f);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) inputDir += frontXY;
